@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Own Cloud</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+
+        h1 {
+            margin-top: 50px;
+        }
+
+        .button-container {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .input-container {
+            margin: 20px auto;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+            transform: scale(1.05);
+        }
+
+        #showresult {
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 80%;
+            max-width: 600px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Hi, here is my own cloud</h1>
+    
+    <div class="input-container">
+        <input type="text" id="container-name" placeholder="Enter Container Name">
+        <input type="text" id="image-name" placeholder="Enter Image Name">
+    </div>
+    
+    <div class="button-container">
+        <button id="show-instance-button">Show Running Instances</button>
+        <button id="start-container-button">Start Docker Container</button>
+        <button id="stop-container-button">Stop Docker Container</button>
+        <button id="list-containers-button">List Docker Containers</button>
+        <button id="launch-container-button">Launch Docker Container</button>
+    </div>
+    
+    <div id="showresult"></div>
+
+    <script>
+        function showInstance() {
+            const url = "http://3.6.41.88/cgi-bin/OwnCloud.py";
+            sendRequest(url);
+        }
+
+        function startContainer() {
+            const containerName = document.getElementById("container-name").value;
+            const url = `http://3.6.41.88/cgi-bin/StartContainer.py?name=${containerName}`;
+            sendRequest(url);
+        }
+
+        function stopContainer() {
+            const containerName = document.getElementById("container-name").value;
+            const url = `http://3.6.41.88/cgi-bin/StopContainer.py?name=${containerName}`;
+            sendRequest(url);
+        }
+
+        function listContainers() {
+            const url = "http://3.6.41.88/cgi-bin/ListContainers.py";
+            sendRequest(url);
+        }
+
+        function launchContainer() {
+            const imageName = document.getElementById("image-name").value;
+            const url = `http://3.6.41.88/cgi-bin/LaunchContainer.py?image=${imageName}`;
+            sendRequest(url);
+        }
+
+        function sendRequest(url) {
+            const xhr = new XMLHttpRequest();
+            xhr.open("GET", url, true);
+
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        document.getElementById("showresult").innerHTML = xhr.responseText;
+                    } else {
+                        document.getElementById("showresult").innerHTML = "Error: " + xhr.status;
+                    }
+                }
+            };
+
+            xhr.send();
+        }
+
+        document.getElementById("show-instance-button").addEventListener("click", showInstance);
+        document.getElementById("start-container-button").addEventListener("click", startContainer);
+        document.getElementById("stop-container-button").addEventListener("click", stopContainer);
+        document.getElementById("list-containers-button").addEventListener("click", listContainers);
+        document.getElementById("launch-container-button").addEventListener("click", launchContainer);
+    </script>
+</body>
+</html>
+
